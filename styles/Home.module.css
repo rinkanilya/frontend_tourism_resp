@@ -1,0 +1,58 @@
+.container {
+  padding: 0rem 12rem 0rem 8rem;
+}
+
+.title {
+  width: 15%;
+  height:auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  justify-content: space-between;
+}
+.title span {
+  width: 35px;
+  height: 35px;
+  background-color: var(--GreenColor);
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.EventContainer {
+  width: 81%;
+  height: 290px;
+  margin: 0 auto;
+  background-color: #6e60eb75;
+  border-radius: 20px;
+  margin-bottom: 1rem;
+  overflow: auto;
+}
+.Event {
+  width: 100%;
+  height: 55px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0.5rem;
+  border-bottom: 1px solid black;
+}
+.EventTitle {
+  width: 80%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 500;
+}
+.Btn{
+  width: 8%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+.Btn span {
+  cursor: pointer;
+}

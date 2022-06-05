@@ -1,0 +1,43 @@
+.container {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0 auto;
+}
+.container h1 {
+    margin-left: 125px;
+}
+.Button {
+    width: 15%;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    margin-right: 180px;
+    font-weight: 600;
+    font-size: 20px;
+}
+
+.ButtonAdd {
+    width: 10%;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    margin-right: 180px;
+    font-weight: 600;
+    font-size: 20px;
+    background-color: var(--GreenColor);
+    border-radius: 3rem;
+    cursor: pointer;
+}
+.btn {
+    width: 70%;
+    height: 80%;
+    font-size: 1.1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    justify-content: space-around;
+}
