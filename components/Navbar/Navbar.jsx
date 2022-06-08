@@ -73,6 +73,10 @@ const Navbar = () => {
                 ? { color: "#6E60EB" }
                 : { color: "black" }
             }
+            onClick={()=>{
+              localStorage.clear();
+              router.push('/signin');
+            }}
           >
             Compte
           </a>

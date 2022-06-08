@@ -15,7 +15,12 @@ const SousNavbar = () => {
   const [descAnnonce , setDescAnnonce] = React.useState("");
   const [AllData , setAllData] = React.useState(AnnoncesData)
 
-
+  if (typeof window !== 'undefined') {
+    const placeName= localStorage.getItem("placeName")
+    React.useEffect(()=>{
+      setTitle(placeName)
+    },[])
+  }
   
   return (
     <>

@@ -14,19 +14,20 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import { useState } from "react";
-import { EventData } from "./api/EventData";
+import { useState ,useEffect} from "react";
 import TextareaAutosize from "@mui/material/TextareaAutosize";
-
+import { useRouter } from "next/router";
+import axios from "axios";
 
 export default function Home() {
+  const router=useRouter();
   const [open, setOpen] = useState(false);
   const [openDesc, setOpenDesc] = useState(false);
-  const [Title, setTitle] = useState("Intitulé de l'evenment");
+  const [Title, setTitle] = useState("");
   const [Date, setDate] = useState("");
   const [editedDesc , setEditedDesc] = useState('')
-  const [desc , setDesc] = useState("Descriptif nanani nanana Descriptif nanani nanana Descriptif nanani nanana Descriptif nanani nanana Descriptif nanani nanana Descriptif nanani nanana Descriptif nanani nanana Descriptif nanani nanana Descriptif nanani nanana Descriptif nanani nanana")
-  const [AllData, setAlldata] = useState(EventData);
+  const [desc , setDesc] = useState("")
+  const [AllData, setAlldata] = useState([]);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -36,14 +37,6 @@ export default function Home() {
     setOpen(false);
   };
 
-  const AddEvent = () => {
-    const Data = { Title, Date, id: Math.floor(Math.random() * 1005) };
-    AllData.push(Data);
-    setOpen(false);
-  };
-  const DeleteEvent = (id) => {
-    setAlldata(AllData.filter((x) => x.id != id))
-  };
  const handleClickDescOpen = () => {
     setOpenDesc(true)
   }
@@ -51,7 +44,47 @@ export default function Home() {
     setOpenDesc(false)
     setDesc(editedDesc)
   }
-  console.log();
+  let logged;
+  if (typeof window !== 'undefined') {
+    logged=localStorage.getItem('logged')
+  }
+  if(!logged){
+    return(
+      <div className="mx-auto">
+        <button className="mx-auto btn btn-lg btn-primary" onClick={()=>router.push('/signin')}>Log in</button>
+      </div>
+    )
+      
+  }
+  let lieuId;
+  if (typeof window !== 'undefined') {
+    lieuId= localStorage.getItem("lieuId")
+    console.log(lieuId)
+  }
+  const AddEvent = async () => {
+    const {data}= await axios.post(`${process.env.URI}event`,{title:Title,id:lieuId,date:Date})
+    alert(data.message)
+    setOpen(false);
+  };
+  const DeleteEvent = async (id) => {
+    const {data}= await axios.delete(`${process.env.URI}event/${id}`)
+    alert(data.message)
+    setAlldata(AllData.filter((x) => x.id != id))
+  };
+  const getLieu=async()=>{
+    const {data}= await axios.get(`${process.env.URI}lieu/${lieuId}`)
+    localStorage.setItem("placeName",data.data.name)
+    setDesc(` Open: ${data.data.accesstimebeg},\n Close: ${data.data.accesstimend}`)
+  }
+  const getEvent=async()=>{
+    const {data}=await axios.get(`${process.env.URI}event/${lieuId}`)
+    setAlldata(data.data)
+  }
+  useEffect(()=>{
+    getEvent()
+    getLieu()
+  },[])
+  
   return (
     <>
       <Head>
@@ -61,7 +94,7 @@ export default function Home() {
       </Head>
 
       <Navbar />
-      <SousNavbar />
+      <SousNavbar/>
       <div className={styles.container}>
         <div className={styles.title}>
           <h3>Descriptif</h3>
@@ -99,8 +132,8 @@ export default function Home() {
           .map((event, index) => (
             <div key={index} className={styles.Event}>
               <div className={styles.EventTitle}>
-                <span>{event.Title}</span>
-                <span>{event.Date}</span>
+                <span>{event.title}</span>
+                <span>{event.date}</span>
               </div>
               <div className={styles.Btn}>
                 <span>
@@ -153,7 +186,7 @@ export default function Home() {
             sx={{ width: 200 }}
             value={Date}
             margin="normal"
-            onChange={(e) => setDate(e.target.value)}
+            onChange={(e) => setDate(`${e.target.value}:00.000Z`)}
             InputLabelProps={{
               shrink: true,
             }}
