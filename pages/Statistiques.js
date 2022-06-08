@@ -1,14 +1,28 @@
-import React from 'react'
+import React, { useEffect, useState }  from 'react'
 import Navbar from '../components/Navbar/Navbar'
 import SousNavbar from '../components/SousNavbar/SousNavbar'
 import styles from "../styles/Statistiques.module.css";
 import {Pie , Line} from "react-chartjs-2";
 import {Tooltip ,Title , ArcElement , Legend, Chart , CategoryScale , LineElement , PointElement , LinearScale   } from 'chart.js';
-
-
+import { useRouter } from "next/router";
+import axios from 'axios';
 
 
 const Statistiques = () => {
+  const [visits,setVisits]=useState(0)
+  const router=useRouter();
+  let logged;
+  if (typeof window !== 'undefined') {
+    logged=localStorage.getItem('logged')
+  }
+  if(!logged){
+    return(
+      <div>
+        <span onClick={()=>router.push('/signin')}>Log in</span>
+      </div>
+    )
+      
+  }
   Chart.register(
     Tooltip ,Title , ArcElement , Legend ,CategoryScale , LineElement , PointElement , LinearScale
   );
@@ -32,13 +46,27 @@ const Statistiques = () => {
       hoverOffset: 4
     }]
   };
+  let lieuId;
+  if (typeof window !== 'undefined') {
+    lieuId= localStorage.getItem("lieuId")
+  }
+  const getVisiteur= async()=>{
+    const {data}= await axios.get(`${process.env.URI}visite/lieu/${lieuId}`)
+    setVisits(data.data)
+  }
+  useEffect(()=>{
+    getVisiteur()
+  },[])
+  useEffect(()=>{
+
+  },[visits])
   return (
     <>
         <Navbar/>
         <SousNavbar/>
         <div className={styles.Container}>
             <div className={styles.Visiteur}>
-                    <h1>529</h1>
+                    <h1>{visits}</h1>
                     <h3>Visiteurs</h3>
             </div>
             <div className={styles.ChartOne}>

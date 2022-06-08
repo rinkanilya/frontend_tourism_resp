@@ -1,11 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar/Navbar";
 import SousNavbar from "../components/SousNavbar/SousNavbar";
 import styles from "../styles/MesAnnonces.module.css";
 import Trash from "../assets/Trash.png";
 import PenGris from "../assets/PenGris.png";
 import Image from "next/image";
-import { AnnoncesData } from "./api/AnnoncesData";
 import PlusIcon from "../assets/Plus.png";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
@@ -15,10 +14,26 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import { useRouter } from "next/router";
+import axios from 'axios';
+
 
 const MesAnnonces = () => {
+  const router=useRouter();
+  let logged;
+  if (typeof window !== 'undefined') {
+    logged=localStorage.getItem('logged')
+  }
+  if(!logged){
+    return(
+      <div>
+        <span onClick={()=>router.push('/signin')}>Log in</span>
+      </div>
+    )
+      
+  }
   const [open , setOpen] = React.useState(false);
-  const [AllData, setAlldata] = useState(AnnoncesData);
+  const [AllData, setAlldata] = useState([]);
   const [title , setTitle] = React.useState("")
   const [desc , setDesc] = React.useState("");
 
@@ -31,15 +46,34 @@ const MesAnnonces = () => {
     setOpen(false);
   };
 
-  const AddAnnonce = () => {
-      setOpen(true)
-      const Data = { title, desc, id: Math.floor(Math.random() * 1005) };
-      AllData.push(Data);
-      setOpen(false)
+  let res;
+  if (typeof window !== 'undefined') {
+    res= localStorage.getItem("responsable")
   }
-  const DeleteEvent = (id) => {
-    setAlldata(AllData.filter((x) => x.id != id))
-  };
+  const getAnnonce=async()=>{
+    const {data}= await axios.get(`${process.env.URI}annonce/${res}`)
+    setAlldata(data.data)
+  }
+  useEffect(()=>{
+    if(res){
+      getAnnonce()
+    }
+    
+  },[])
+  const AddAnnonce =async () => {
+    setOpen(true)
+    const date=new Date();
+    const {data}= await axios.post(`${process.env.URI}annonce`,{date:date,content:desc,id:res})
+    setAlldata([...AllData,data.data])
+    alert(data.message)
+    setOpen(false)
+}
+const DeleteEvent = async(id) => {
+  const {data}= await axios.delete(`${process.env.URI}annonce/${id}`)
+  setAlldata(AllData.filter((x) => x.idannonce != id))
+  alert(data.message)
+};
+useEffect(()=>{},[AllData])
   return (
     <>
       <Navbar />
@@ -58,7 +92,7 @@ const MesAnnonces = () => {
           .map((annonce, index) => (
             <div key={index} className={styles.Card}>
               <div className={styles.Title}>
-                <h1>{annonce.title}</h1>
+                <h1>{annonce.Addedat}</h1>
                 <div className={styles.Btn}>
                   <span>
                     <Image
@@ -69,7 +103,7 @@ const MesAnnonces = () => {
                     />
                   </span>
                   <span onClick={() => {
-                    DeleteEvent(annonce.id);
+                    DeleteEvent(annonce.idannonce);
                   }}>
                     <Image
                       src={Trash}
@@ -80,7 +114,7 @@ const MesAnnonces = () => {
                   </span>
                 </div>
               </div>
-              <div className={styles.Desc}>{annonce.desc}</div>
+              <div className={styles.Desc}>{annonce.contenue}</div>
             </div>
           ))}
       </div>

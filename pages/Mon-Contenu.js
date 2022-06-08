@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Navbar from "../components/Navbar/Navbar";
 import SousNavbar from "../components/SousNavbar/SousNavbar";
 import styles from "../styles/MonContenu.module.css";
@@ -11,11 +11,35 @@ import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
+import { useRouter } from "next/router";
+import { storage } from '../firebase'
+import { ref, uploadBytes, listAll, getDownloadURL, deleteObject } from 'firebase/storage'
+
+
+
 
 const MonContenu = () => {
+
+  const router = useRouter()
+  let logged;
+  if (typeof window !== 'undefined') {
+    logged = localStorage.getItem('logged')
+  }
+  if (!logged) {
+    return (
+      <div>
+        <span onClick={() => router.push('/signin')}>Log in</span>
+      </div>
+    )
+
+  }
+  let lieuId;
+  if (typeof window !== 'undefined') {
+    lieuId = localStorage.getItem("lieuId")
+  }
   console.log(musée.src);
   const [open, setOpen] = React.useState(false);
-  const [image, setImage] = React.useState(musée.src);
+  const [imageList, setImageList] = React.useState([])
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -24,23 +48,38 @@ const MonContenu = () => {
   const handleClose = () => {
     setOpen(false);
   };
-  const RemoveImage = () => {
-    const Card = document.getElementById("Card");
-    Card.remove();
-    setOpen(false);
+  const RemoveImage = (ref) => {
+     deleteObject(ref).then(() => {
+        alert('deleted!')
+     })
   };
   const handelImage = (e) => {
-    const ff = e.target.files[0]
-    const filePreview = URL.createObjectURL(ff)
-    setImage(filePreview)
+    if (e.target.files[0] == null) return;
+    const imageRef = ref(storage, `images/${lieuId}/${Date.now() + e.target.files[0].name}`)
+    uploadBytes(imageRef, e.target.files[0]).then((element) => {
+      getDownloadURL(element.ref).then((url) => {
+        alert("Uploaded!")
+      })
+    })
   }
+  const listRef = ref(storage, `images/${lieuId}/`)
+  useEffect(() => {
+    listAll(listRef).then((res) => {
+      setImageList([])
+      res.items.forEach((item) => {
+        getDownloadURL(item).then((url) => {
+          setImageList((prev) => [...prev, { ref: item, url: url }])
+        })
+      })
+    })
+  }, [])
   return (
     <>
       <Navbar />
       <SousNavbar />
       <div className={styles.Container}>
         <div id="Card" className={styles.Card}>
-          <label htmlFor="filePicker"  className={styles.Title}>
+          <label htmlFor="filePicker" className={styles.Title}>
             <span>Photos</span>
             <Image
               src={DownloadIcon}
@@ -53,22 +92,26 @@ const MonContenu = () => {
             id="filePicker"
             accept={'image/*'}
             onChange={handelImage}
-            style={{visibility:"hidden" , position:"absolute"}}
+            style={{ visibility: "hidden", position: "absolute" }}
             type={"file"}
           />
-          <div
-            className={styles.Image}
-          >
-            <img src={image} alt="musée" />
-            <span onClick={handleClickOpen}>
-              <DeleteOutlineIcon fontSize="small" />
-            </span>
-            <div className={styles.Points}>
-              <div style={{ backgroundColor: "#3F3B3B" }}></div>
-              <div></div>
-              <div></div>
-            </div>
-          </div>
+          {imageList.map((item) => {
+            console.log(imageList)
+            return (
+              <>
+                <div className={styles.Image}>
+                  <img src={item.url} alt="musée" />
+                  <span onClick={()=>{RemoveImage(item.ref)} }>
+                    <DeleteOutlineIcon fontSize="small" />
+                  </span>
+                  <div className={styles.Points}>
+                    <div style={{ backgroundColor: "#3F3B3B" }}></div>
+                  </div>
+                </div>
+              </>)
+          })
+          }
+
         </div>
         <div className={styles.Card}>
           <div className={styles.Title}>
