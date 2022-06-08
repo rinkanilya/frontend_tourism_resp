@@ -6,6 +6,7 @@ import axios from 'axios';
 import { useRouter } from "next/router";
 import { Alert, AlertTitle } from '@mui/material';
 
+
 const signin = () => {
   const router = useRouter()
   const [email, setEmail] = useState('');
@@ -14,7 +15,9 @@ const signin = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log(process.env.URI)
     const { data } = await axios.post(`${process.env.URI}responsable/login`, { email, password })
+    
     console.log(data)
     if (data.status == 200) {
       localStorage.setItem("logged", true);
