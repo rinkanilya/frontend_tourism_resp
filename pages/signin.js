@@ -15,7 +15,6 @@ const signin = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(process.env.URI)
     const { data } = await axios.post(`${process.env.URI}responsable/login`, { email, password })
     
     console.log(data)

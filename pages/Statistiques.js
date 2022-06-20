@@ -1,6 +1,6 @@
 import React, { useEffect, useState }  from 'react'
-import Navbar from '../components/Navbar/Navbar'
-import SousNavbar from '../components/SousNavbar/SousNavbar'
+import Navbar from '../components/Navbar'
+import SousNavbar from '../components/SousNavbar'
 import styles from "../styles/Statistiques.module.css";
 import {Pie , Line} from "react-chartjs-2";
 import {Tooltip ,Title , ArcElement , Legend, Chart , CategoryScale , LineElement , PointElement , LinearScale   } from 'chart.js';
@@ -15,14 +15,14 @@ const Statistiques = () => {
   if (typeof window !== 'undefined') {
     logged=localStorage.getItem('logged')
   }
-  if(!logged){
-    return(
-      <div>
-        <span onClick={()=>router.push('/signin')}>Log in</span>
-      </div>
-    )
+  // if(!logged){
+  //   return(
+  //     <div>
+  //       <span onClick={()=>router.push('/signin')}>Log in</span>
+  //     </div>
+  //   )
       
-  }
+  // }
   Chart.register(
     Tooltip ,Title , ArcElement , Legend ,CategoryScale , LineElement , PointElement , LinearScale
   );
@@ -62,7 +62,8 @@ const Statistiques = () => {
   },[visits])
   return (
     <>
-        <Navbar/>
+       <div>
+       <Navbar/>
         <SousNavbar/>
         <div className={styles.Container}>
             <div className={styles.Visiteur}>
@@ -78,6 +79,7 @@ const Statistiques = () => {
   options={{ maintainAspectRatio: false , responsive: true, }} />
             </div>
         </div>
+       </div>
     </>
   )
 }

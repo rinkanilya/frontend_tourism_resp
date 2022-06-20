@@ -1,11 +1,10 @@
 import React from 'react'
-import styles from "../../styles/SousNavbar.module.css";
+import styles from "../styles/SousNavbar.module.css";
 import Rating from '@mui/material/Rating';
 import { useRouter } from "next/router";
-import PlusIcon from "../../assets/Plus.png";
-import Image from "next/Image";
 
-import { AnnoncesData } from '../../pages/api/AnnoncesData';
+
+import { AnnoncesData } from '../pages/api/AnnoncesData';
 
 const SousNavbar = () => {
   const router = useRouter();
