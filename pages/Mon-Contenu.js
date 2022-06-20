@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
-import Navbar from "../components/Navbar/Navbar";
-import SousNavbar from "../components/SousNavbar/SousNavbar";
+import Navbar from "../components/Navbar";
+import SousNavbar from "../components/SousNavbar";
 import styles from "../styles/MonContenu.module.css";
 import DownloadIcon from "../assets/Download.png";
 import Image from "next/image";
@@ -25,14 +25,14 @@ const MonContenu = () => {
   if (typeof window !== 'undefined') {
     logged = localStorage.getItem('logged')
   }
-  if (!logged) {
-    return (
-      <div>
-        <span onClick={() => router.push('/signin')}>Log in</span>
-      </div>
-    )
+  // if (!logged) {
+  //   return (
+  //     <div>
+  //       <span onClick={() => router.push('/signin')}>Log in</span>
+  //     </div>
+  //   )
 
-  }
+  // }
   let lieuId;
   if (typeof window !== 'undefined') {
     lieuId = localStorage.getItem("lieuId")
@@ -75,6 +75,7 @@ const MonContenu = () => {
   }, [])
   return (
     <>
+      <div>
       <Navbar />
       <SousNavbar />
       <div className={styles.Container}>
@@ -155,6 +156,7 @@ const MonContenu = () => {
           <Button onClick={RemoveImage}>Supprimer</Button>
         </DialogActions>
       </Dialog>
+      </div>
     </>
   );
 };

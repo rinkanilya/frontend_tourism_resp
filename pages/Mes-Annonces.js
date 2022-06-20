@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Navbar from "../components/Navbar/Navbar";
-import SousNavbar from "../components/SousNavbar/SousNavbar";
+import Navbar from "../components/Navbar";
 import styles from "../styles/MesAnnonces.module.css";
 import Trash from "../assets/Trash.png";
 import PenGris from "../assets/PenGris.png";
@@ -24,14 +23,14 @@ const MesAnnonces = () => {
   if (typeof window !== 'undefined') {
     logged=localStorage.getItem('logged')
   }
-  if(!logged){
-    return(
-      <div>
-        <span onClick={()=>router.push('/signin')}>Log in</span>
-      </div>
-    )
+  // if(!logged){
+  //   return(
+  //     <div>
+  //       <span onClick={()=>router.push('/signin')}>Log in</span>
+  //     </div>
+  //   )
       
-  }
+  // }
   const [open , setOpen] = React.useState(false);
   const [AllData, setAlldata] = useState([]);
   const [title , setTitle] = React.useState("")
@@ -76,6 +75,7 @@ const DeleteEvent = async(id) => {
 useEffect(()=>{},[AllData])
   return (
     <>
+      <div>
       <Navbar />
       <div className={styles.container}>
         <h1>Annonces</h1>
@@ -150,6 +150,7 @@ useEffect(()=>{},[AllData])
           <Button onClick={AddAnnonce}>Ajouter</Button>
         </DialogActions>
       </Dialog>
+      </div>
     </>
   );
 };
